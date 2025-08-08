@@ -1,0 +1,51 @@
+.content{
+    display: flex;
+    flex-direction: column;
+    padding: 25pt;
+    border-radius: 20pt;
+    background-color: black;
+    max-width: 40%;
+    min-width: 30%;
+    height: max-content;
+    font-family: var(--poppins);
+    text-align: center;
+    transition: all 0.3s ease-in-out;
+}
+
+.content:hover {
+  transform: scale(1.03); 
+  box-shadow: 0 8px 16px #da76292b;
+  cursor: pointer;
+}
+
+.linkWrapper {
+  text-decoration: none;
+  color: inherit;
+  display: contents; 
+}
+
+
+@media (max-width: 640px) {
+  .content {
+    width: 100%; 
+  }
+}
+
+.line{
+    border: #da762995 0.5px solid;
+    margin-bottom: 10pt;
+    margin-top: 10pt;
+    width: 100%;
+}
+
+.pendek{
+    color: #DA7629;
+    font-weight: 600;
+    font-size: 20pt;
+}
+
+.panjang{
+    color: white;
+    font-weight: 500;
+    font-size: 12pt;
+}

@@ -1,0 +1,36 @@
+.info{
+    display:  flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.container{
+    padding: 25pt;
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    color: rgba(255, 255, 255, 0.573);
+    width: 100%;
+    font-family: var(--poppins);
+    font-size: 10pt;
+}
+
+.container a{
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.573);
+}
+
+.credit{
+    display: flex;
+    justify-content: center;
+    margin-top: 20pt;
+    font-size: 8pt;
+}
+
+.rata{
+    display: flex;
+    align-items: center;
+    gap: 7pt;
+    margin-top: 4pt;
+    margin-bottom: 4pt;
+}

@@ -1,0 +1,28 @@
+.align{
+    display: flex;
+    gap: 30pt;
+    font-family: var(--poppins);
+    align-items: center;
+}
+
+.link{
+    text-decoration: none;
+    color: white;
+    font-weight: 600;
+}
+
+.welcome{
+    font-family: var(--poppins);
+    color: white;
+}
+
+.welcome h1{
+    font-size: 35pt;
+}
+
+.welcome h3{
+    color: #DA7629;
+    font-size: 20pt;
+    font-weight: 500;
+    margin-top: 5pt;
+}

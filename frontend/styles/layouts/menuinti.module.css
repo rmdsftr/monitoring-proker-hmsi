@@ -1,0 +1,11 @@
+.main{
+    display:  flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7%;
+    width: 85%;
+}
+
+.sejajar{
+    display: flex;
+}

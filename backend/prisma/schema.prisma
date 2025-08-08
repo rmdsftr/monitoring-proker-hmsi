@@ -1,0 +1,199 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model absensi {
+  id_kegiatan String   @db.VarChar(100)
+  no_hima     String   @db.VarChar(100)
+  kehadiran   String?  @db.VarChar(100)
+  kegiatan    kegiatan @relation(fields: [id_kegiatan], references: [id_kegiatan], onDelete: Cascade, onUpdate: NoAction)
+  anggota     anggota  @relation(fields: [no_hima], references: [no_hima], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([id_kegiatan, no_hima])
+}
+
+model anggota {
+  no_hima    String      @id @db.VarChar(100)
+  nama       String      @db.VarChar(255)
+  nim        String      @unique @db.VarChar(50)
+  sandi      String      @db.VarChar(255)
+  role       String?     @default("anggota") @db.VarChar(50)
+  foto       String?
+  birthdate  DateTime?   @db.Date
+  birthplace String?     @db.VarChar(255)
+  alamat     String?
+  nohp       String?     @db.VarChar(50)
+  created_at DateTime?   @default(now()) @db.Timestamptz(6)
+  updated_at DateTime?   @default(now()) @db.Timestamptz(6)
+  panggilan  String?     @db.VarChar(100)
+  absensi    absensi[]
+  pengurus   pengurus[]
+  pj_proker  pj_proker[]
+}
+
+model dana_proker {
+  id_proker     String      @db.VarChar(100)
+  id_dana       String      @db.VarChar(100)
+  dana_estimasi BigInt?
+  dana_terpakai BigInt?
+  sumber_dana   sumber_dana @relation(fields: [id_dana], references: [id_dana], onDelete: Cascade, onUpdate: NoAction)
+  proker        proker      @relation(fields: [id_proker], references: [id_proker], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([id_proker, id_dana])
+}
+
+model detail_divisi {
+  id_divisi  String  @db.VarChar(100)
+  id_periode String  @db.VarChar(100)
+  foto       String?
+  deskripsi  String?
+  visi       String?
+  misi       String?
+  divisi     divisi  @relation(fields: [id_divisi], references: [id_divisi], onDelete: Cascade, onUpdate: NoAction)
+  periode    periode @relation(fields: [id_periode], references: [id_periode], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([id_divisi, id_periode])
+}
+
+model divisi {
+  id_divisi     String          @id @db.VarChar(100)
+  divisi        String          @db.VarChar(255)
+  created_at    DateTime?       @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime?       @default(now()) @db.Timestamptz(6)
+  detail_divisi detail_divisi[]
+  pengurus      pengurus[]
+  proker_divisi proker_divisi[]
+}
+
+model dokumentasi {
+  seq        BigInt
+  id_proker  String  @db.VarChar(100)
+  foto       Bytes?
+  keterangan String? @db.VarChar(100)
+  proker     proker  @relation(fields: [id_proker], references: [id_proker], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([seq, id_proker])
+}
+
+model jabatan {
+  id_jabatan String     @id @db.VarChar(100)
+  jabatan    String     @db.VarChar(255)
+  created_at DateTime?  @default(now()) @db.Timestamptz(6)
+  updated_at DateTime?  @default(now()) @db.Timestamptz(6)
+  pengurus   pengurus[]
+}
+
+model keberhasilan {
+  seq              BigInt
+  id_proker        String  @db.VarChar(100)
+  parameter        String?
+  status_parameter String? @db.VarChar(100)
+  proker           proker  @relation(fields: [id_proker], references: [id_proker], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([seq, id_proker])
+}
+
+model kegiatan {
+  id_kegiatan String    @id @db.VarChar(100)
+  kegiatan    String    @db.VarChar(255)
+  tanggal     DateTime  @db.Date
+  waktu       DateTime? @db.Time(6)
+  lokasi      String?   @db.VarChar(255)
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime? @default(now()) @db.Timestamptz(6)
+  absensi     absensi[]
+}
+
+model pelaksanaan {
+  seq                BigInt
+  id_proker          String    @db.VarChar(100)
+  start_proker       DateTime? @db.Date
+  end_proker         DateTime? @db.Date
+  status_pelaksanaan String?   @db.VarChar(100)
+  proker             proker    @relation(fields: [id_proker], references: [id_proker], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([seq, id_proker])
+}
+
+model pengurus {
+  no_hima    String   @db.VarChar(100)
+  id_periode String   @db.VarChar(100)
+  id_jabatan String?  @db.VarChar(100)
+  id_divisi  String?  @db.VarChar(100)
+  divisi     divisi?  @relation(fields: [id_divisi], references: [id_divisi], onDelete: NoAction, onUpdate: NoAction)
+  jabatan    jabatan? @relation(fields: [id_jabatan], references: [id_jabatan], onDelete: NoAction, onUpdate: NoAction)
+  periode    periode  @relation(fields: [id_periode], references: [id_periode], onDelete: Cascade, onUpdate: NoAction)
+  anggota    anggota  @relation(fields: [no_hima], references: [no_hima], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([no_hima, id_periode])
+}
+
+model periode {
+  id_periode     String          @id @db.VarChar(100)
+  start_year     String?         @db.VarChar(10)
+  end_year       String?         @db.VarChar(10)
+  status_periode String?         @db.VarChar(100)
+  created_at     DateTime?       @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime?       @default(now()) @db.Timestamptz(6)
+  background     String?
+  token_transisi String?         @unique(map: "unique_token_transisi") @db.VarChar(255)
+  detail_divisi  detail_divisi[]
+  pengurus       pengurus[]
+  proker         proker[]
+}
+
+model pj_proker {
+  no_hima    String  @db.VarChar(100)
+  id_proker  String  @db.VarChar(100)
+  kontribusi String?
+  proker     proker  @relation(fields: [id_proker], references: [id_proker], onDelete: Cascade, onUpdate: NoAction)
+  anggota    anggota @relation(fields: [no_hima], references: [no_hima], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([no_hima, id_proker])
+}
+
+model proker {
+  id_proker               String          @id @db.VarChar(100)
+  nama_proker             String          @db.VarChar(255)
+  latar_belakang          String?
+  tujuan                  String?
+  sasaran                 String?
+  bentuk_kegiatan         String?
+  estimasi_anggaran       Int?
+  sisa_anggaran           Int?
+  id_periode              String?         @db.VarChar(100)
+  status_proker           String?         @db.VarChar(100)
+  persentase_pelaksanaan  Decimal?        @db.Decimal(5, 2)
+  persentase_keberhasilan Decimal?        @db.Decimal(5, 2)
+  created_at              DateTime?       @default(now()) @db.Timestamptz(6)
+  updated_at              DateTime?       @default(now()) @db.Timestamptz(6)
+  dana_proker             dana_proker[]
+  dokumentasi             dokumentasi[]
+  keberhasilan            keberhasilan[]
+  pelaksanaan             pelaksanaan[]
+  pj_proker               pj_proker[]
+  periode                 periode?        @relation(fields: [id_periode], references: [id_periode], onDelete: Cascade, onUpdate: NoAction)
+  proker_divisi           proker_divisi[]
+}
+
+model sumber_dana {
+  id_dana     String        @id @db.VarChar(100)
+  sumber      String?       @db.VarChar(255)
+  created_at  DateTime?     @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime?     @default(now()) @db.Timestamptz(6)
+  dana_proker dana_proker[]
+}
+
+model proker_divisi {
+  id_proker String @db.VarChar(100)
+  id_divisi String @db.VarChar(100)
+  divisi    divisi @relation(fields: [id_divisi], references: [id_divisi], onDelete: NoAction, onUpdate: NoAction)
+  proker    proker @relation(fields: [id_proker], references: [id_proker], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([id_proker, id_divisi])
+}

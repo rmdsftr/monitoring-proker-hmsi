@@ -1,0 +1,49 @@
+.background{
+    background-color: black;
+    display: flex;
+    width: 100%;
+    padding: 25pt;
+    border-radius: 15pt;
+    align-items: center;
+}
+
+.img{
+    border-radius: 10pt;
+}
+
+.main{
+    font-family: var(--poppins);
+    display:  flex;
+    flex-direction: column;
+    margin-left: 30pt;
+}
+
+.title{
+    color: #DA7629;
+    font-weight: 600;
+    font-size: 30pt;
+}
+
+.gap{
+    margin-top: 15pt;
+    margin-bottom: 15pt;
+}
+
+.divisi{
+    color: #DA7629;
+    font-weight: 400;
+    margin-bottom: 8pt;
+}
+
+.sub{
+    color: #DA7629;
+}
+
+.content, .desc{
+    color: rgba(255, 255, 255, 0.637);
+    font-size: 9pt;
+}
+
+.misi .content{
+    padding-left: 15pt;
+}

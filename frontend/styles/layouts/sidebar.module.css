@@ -1,0 +1,27 @@
+.background{
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 15%;
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-top-right-radius: 30pt;
+    border-bottom-right-radius: 30pt;
+    padding: 20pt;
+    transition: transform 0.5s ease-in-out;
+    min-width: 15%;
+    min-height: 100vh;
+    position: sticky;
+}
+
+.link{
+    text-decoration: none;
+}
+
+@media (max-width: 768px) {
+  .background {
+    transform: translateX(-125%);
+  }
+}

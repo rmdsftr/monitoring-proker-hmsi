@@ -1,0 +1,10 @@
+.background{
+    display: flex;
+    background-color: #232323;
+    background-position: center;
+    background-repeat: repeat-y;
+}
+
+.container{
+    padding: 25pt;
+}
