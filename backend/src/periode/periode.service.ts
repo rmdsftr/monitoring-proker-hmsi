@@ -36,4 +36,22 @@ export class PeriodeService{
             return failed("Kesalahan pada server", error);
         }
     }
+
+    async getPeriodeOptions() {
+        const list = await this.prisma.periode.findMany({
+            select: {
+                id_periode: true,
+                start_year: true,
+                end_year: true
+            }
+        });
+
+        const options = list.map(p => ({
+            label: `${p.start_year}/${p.end_year}`,
+            value: p.id_periode
+        }));
+
+        return { options };
+    }
+
 }

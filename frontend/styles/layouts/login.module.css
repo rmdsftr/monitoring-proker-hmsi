@@ -1,0 +1,33 @@
+.form{
+    padding: 40pt;
+    width: 100%;
+    min-width: 375pt;
+    background-color: rgba(255, 255, 255, 0.669);
+    text-align: center;
+    border-radius: 15pt;
+    font-family: var(--poppins);
+    font-size: 12pt;
+}
+
+.full{
+    width: 100%;
+}
+
+.drop{
+    width: 100%;
+    font-family: var(--poppins);
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.btn{
+    height: 35pt;
+    width: 100%;
+}
+
+.error{
+    color: red;
+    font-family: var(--poppins);
+    font-size: 10pt;
+    font-weight: 500;
+    margin-bottom: 10pt;
+}

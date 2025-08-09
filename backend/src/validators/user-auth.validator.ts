@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { jwtPayload } from "../auth/interfaces/payload.interface";
 import { PrismaService } from "../prisma/prisma.service";
 import { failed } from "../utils/response";
+import { formatPrimaryKey } from "src/utils/titlecase";
 
 @Injectable()
 export class UserValidator{
@@ -9,9 +10,12 @@ export class UserValidator{
 
     async validateUser(payload: jwtPayload){
         try {
+            const id_anggota = formatPrimaryKey(payload.id_anggota);
+
             const user = await this.prisma.anggota.findUnique({
-                where: {no_hima: payload.no_hima},
+                where: {id_anggota: id_anggota},
                 select: {
+                    id_anggota:true,
                     no_hima:true,
                     nim: true,
                     role: true,

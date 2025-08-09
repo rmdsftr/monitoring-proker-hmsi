@@ -10,3 +10,7 @@ export function toTitleCase(str: string): string {
 export function toUpperCase(str: string): string {
   return str.toUpperCase();
 }
+
+export function formatPrimaryKey(input: string): string {
+  return input.replace(/\./g, '').toLowerCase();
+}

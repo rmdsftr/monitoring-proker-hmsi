@@ -1,0 +1,92 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  font-family: var(--poppins);
+}
+
+.label {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+
+/* Variants */
+.inputContainer {
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  padding: 5pt;
+}
+
+.outline {
+  border: 1.5px solid #232323;
+  background-color: none;
+}
+
+.solid {
+  background-color: #f3f4f6;
+  border: none;
+}
+
+.ghost {
+  background-color: transparent;
+  border: none;
+  border-bottom: 1.5px solid #ccc;
+}
+
+/* Colors */
+.primary:focus-within {
+  border-color: #DA7629;
+}
+
+.danger:focus-within {
+  border-color: #dc2626;
+}
+
+.gray:focus-within {
+  border-color: #9ca3af;
+}
+
+/* Input */
+.input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  font-size: inherit;
+  color: #111;
+}
+
+.input::placeholder {
+  color: rgba(0,0,0,0.5);
+  font-family: var(--poppins);
+  font-size: 11pt;
+}
+
+/* Icons */
+.iconLeft {
+  margin-right: 8px;
+  margin-left: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  color: #666;
+}
+
+.iconRight {
+  margin-left: 8px;
+  margin-right: 5px;
+  color: #666;
+}
+
+/* Error */
+.error {
+  border-color: #dc2626 !important;
+}
+
+.errorMessage {
+  color: #dc2626;
+  font-size: 12px;
+}

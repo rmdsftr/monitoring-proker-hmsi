@@ -1,0 +1,9 @@
+.background{
+    display: flex;
+    gap: 10pt;
+    padding: 7pt 15pt;
+    background-color: white;
+    width: max-content;
+    border-top-right-radius: 25pt;
+    border-bottom-right-radius: 25pt;
+}

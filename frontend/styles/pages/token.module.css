@@ -1,0 +1,73 @@
+.wallpaper.wallpaper {
+  position: relative; 
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: black;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.wallpaper::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6); 
+  z-index: 1;
+}
+
+.watermark{
+    position: fixed;
+}
+
+.container{
+    position: relative;
+    z-index: 3;
+    height: 100vh;
+}
+
+.container2{
+    position: relative;
+    z-index: 5;
+    height: 100vh;
+    width: 100%;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.content{
+    position: absolute;
+    z-index: 5;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form{
+    padding: 40pt;
+    width: 40%;
+    background-color: rgba(255, 255, 255, 0.669);
+    text-align: center;
+    border-radius: 15pt;
+    font-family: var(--poppins);
+    font-size: 12pt;
+}
+
+.drop{
+    width: 100%;
+    font-family: var(--poppins);
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.btn{
+    height: 35pt;
+    width: 100%;
+}
