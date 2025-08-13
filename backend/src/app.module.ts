@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { jwtConfig } from './config/jwt.config';
 import { TokenModule } from './token/token.module';
+import { VisiMisiModule } from './visimisi/visimisi.module';
 
 @Module({
   controllers: [AppController],
@@ -17,6 +18,6 @@ import { TokenModule } from './token/token.module';
     cache:true,
     envFilePath: ['.env'],
     load: [() => ({jwt: jwtConfig})]
-  }),PeriodeModule, JabatanModule, DivisiModule, AuthModule, TokenModule]
+  }),PeriodeModule, JabatanModule, DivisiModule, AuthModule, TokenModule, VisiMisiModule]
 })
 export class AppModule {}

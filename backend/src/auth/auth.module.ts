@@ -25,6 +25,7 @@ import { CookieService } from "../utils/token-cookies";
                 }
             })
         })
-    ]
+    ],
+    exports: [AuthService]
 })
 export class AuthModule{}

@@ -6,10 +6,10 @@
     background-color: black;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-content: space-between;
     border-top-right-radius: 30pt;
     border-bottom-right-radius: 30pt;
-    padding: 20pt;
+    padding: 20pt 15pt;
     transition: transform 0.5s ease-in-out;
     min-width: 15%;
     min-height: 100vh;
@@ -18,6 +18,11 @@
 
 .link{
     text-decoration: none;
+}
+
+.person{
+  margin-bottom: 0;
+  margin-top: auto;
 }
 
 @media (max-width: 768px) {

@@ -57,12 +57,24 @@
 /* Outline */
 .outline-primary {
   background: transparent;
-  border: 2px solid #1e40af;
-  color: #1e40af;
+  border: 2px solid #DA7629;
+  color: #DA7629;
 }
 
 .outline-primary:hover {
-  background-color: #e0e7ff;
+  background-color: #DA7629;
+  color: white;
+}
+
+.outline-secondary {
+  background: transparent;
+  border: 1px solid black;
+  color: black;
+}
+
+.outline-secondary:hover {
+  background-color: black;
+  color: white;
 }
 
 /* Ghost */

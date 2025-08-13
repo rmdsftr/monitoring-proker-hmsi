@@ -11,9 +11,9 @@ export default function MenuList(){
         {menu:"Divisi", href:"/divisi"},
         {menu:"POTM", href:"/potm"},
         {menu:"SOTM", href:"/sotm"},
-        {menu:"Program Kerja", href:"/proker"},
         {menu:"Timeline", href:"/timeline"},
-        {menu:"Absensi", href:"/absensi"}
+        {menu:"Absensi", href:"/absensi"},
+        {menu:"Arus Kas", href:"/kas"},
     ]
 
     return(

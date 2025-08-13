@@ -34,7 +34,7 @@ export default function Footer(){
                 </div>
             </div>
             <div className={styles.credit}>
-                <p>© Himpunan Mahasiswa Sistem Informasi 2025 — Developed by <a href="https://github.com/rmdsftr">Ramadhani Safitri</a></p>
+                <p>© Himpunan Mahasiswa Sistem Informasi 2025. All rights reserved</p>
             </div>
         </div>
     )

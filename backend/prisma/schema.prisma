@@ -78,6 +78,27 @@ model periode {
   updated_at     DateTime?       @default(now()) @db.Timestamptz(6)
   background     String?
   token_transisi String?         @unique(map: "unique_token_transisi") @db.VarChar(255)
+  foto_inti      String?
   detail_divisi  detail_divisi[]
+  misi           misi[]
   pengurus       pengurus[]
+  visi           visi[]
+}
+
+model misi {
+  id_misi    BigInt    @id @default(autoincrement())
+  misi       String?
+  id_periode String?   @db.VarChar(100)
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at DateTime? @default(now()) @db.Timestamptz(6)
+  periode    periode?  @relation(fields: [id_periode], references: [id_periode], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model visi {
+  id_visi    BigInt    @id @default(autoincrement())
+  visi       String?
+  id_periode String?   @db.VarChar(100)
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at DateTime? @default(now()) @db.Timestamptz(6)
+  periode    periode?  @relation(fields: [id_periode], references: [id_periode], onDelete: NoAction, onUpdate: NoAction)
 }

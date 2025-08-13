@@ -6,3 +6,10 @@
     justify-content: center;
     align-items: center;
 }
+
+.cat {
+  display: flex;
+  margin: auto;
+  justify-content: center;
+  align-items: center;
+}

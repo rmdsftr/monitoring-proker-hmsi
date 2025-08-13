@@ -19,6 +19,7 @@ export class UserValidator{
                     no_hima:true,
                     nim: true,
                     role: true,
+                    panggilan:true,
                     pengurus: {
                         select: {
                             id_periode: true,

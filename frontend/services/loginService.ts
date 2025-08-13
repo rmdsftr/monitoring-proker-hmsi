@@ -1,26 +1,36 @@
-export async function loginUser(payload: {
+import { refreshUser } from "@/utils/cookie";
+
+export async function login(payload: {
   no_hima: string;
   periode_id: string;
   password: string;
-  id_periode: string;
 }) {
-  const res = await fetch(`http://localhost:5000/auth/new`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
     body: JSON.stringify(payload),
   });
+  if (!res.ok) throw new Error((await res.json()).message || "Login gagal");
 
-  if (!res.ok) {
-    const errData = await res.json();
-    // kalau backend ngirim { errors: {...} } kita lempar
-    if (errData.errors) {
-      const error: any = new Error("Validation error");
-      error.fieldErrors = errData.errors;
-      throw error;
-    }
-    throw new Error(errData.message || "Login gagal");
-  }
+  await refreshUser();
+  return await res.json();
+}
 
+export async function loginAktivasi(payload: {
+  no_hima: string;
+  periode_id: string;
+  password: string;
+  id_periode: string;
+}) {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/new`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error((await res.json()).message || "Login gagal");
+
+  await refreshUser();
   return await res.json();
 }

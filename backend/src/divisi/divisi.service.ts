@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import { CreateDivisiDto } from "./dto/create-divisi.dto";
 import { toTitleCase, toUpperCase } from "../utils/titlecase";
@@ -9,6 +9,25 @@ export class DivisiService{
     constructor(
         private prisma:PrismaService
     ){}
+
+    async getDivisi(){
+        try {
+            const all = await this.prisma.divisi.findMany({
+                where: {is_inti:false},
+                select: {
+                    id_divisi: true,
+                    divisi: true
+                }
+            })
+
+            return all;
+        } catch (error) {
+            if(!(error instanceof Error)){
+                throw new InternalServerErrorException("Kesalahan pada server");
+            }
+            throw error;
+        }
+    }
 
     async add(dto:CreateDivisiDto){
         try {

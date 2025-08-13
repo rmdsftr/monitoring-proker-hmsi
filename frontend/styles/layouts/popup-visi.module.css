@@ -1,0 +1,19 @@
+.content{
+    width: 400pt;
+    flex: 1;
+}
+
+.btn{
+    display: flex;
+    justify-content: center;
+}
+
+.cancel{
+    margin-right: 5pt;
+    width: 25%;
+}
+
+.save{
+    margin-left: 5pt;
+    width: 25%;
+}

@@ -10,7 +10,7 @@ import { ChevronDown } from "lucide-react";
 import { PasswordInput } from "@/components/input/password";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { loginUser } from "@/services/loginService";
+import { loginAktivasi } from "@/services/loginService";
 
 export default function FormLogin() {
   const [options, setOptions] = useState<{ label: string; value: string }[]>([]);
@@ -41,7 +41,7 @@ export default function FormLogin() {
     setErrors({}); // reset error tiap submit
 
     try {
-      await loginUser({
+      await loginAktivasi({
         no_hima: noHima,
         periode_id: periodeId,
         password,

@@ -1,0 +1,17 @@
+.foto{
+    border-radius: 100%;
+}
+
+.corner{
+    display: flex;
+    align-items: center;
+}
+
+.corner p{
+    font-family: var(--poppins);
+    font-size: 9pt;
+    font-weight: 500;
+    margin-left: 8pt;
+    margin-right: 8pt;
+    color: white;
+}

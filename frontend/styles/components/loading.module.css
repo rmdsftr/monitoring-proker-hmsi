@@ -1,0 +1,17 @@
+.ethel{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    font-family: var(--poppins);
+    font-size: 10pt;
+}
+
+.ethel p{
+    margin-top: 10pt;
+}
+
+.cat{
+    border-radius: 50%;
+}

@@ -1,0 +1,106 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem; 
+  font-family: var(--poppins);
+  scroll-behavior: smooth;
+  padding: 2rem; 
+  flex: 1;
+}
+
+.visi, .misi {
+  flex: 1; 
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center; 
+  border-radius: 8px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: 7pt;
+  position: relative;
+}
+
+.visi h4, .misi h4 {
+  margin-bottom: 12pt;
+  color: #DA7629;
+  font-size: 20pt;
+}
+
+.visi p, .misi p {
+  font-size: 10pt;
+}
+
+.vision, .mision {
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.3);
+  padding: 15pt;
+  border-radius: 10pt;
+  margin: 5pt 0;
+  display: flex;
+  align-items: center;
+}
+
+.editvisi, .editmisi {
+  cursor: pointer; 
+  padding: 5pt;
+  margin: 5pt;
+  position: relative; /* untuk tooltip */
+}
+
+.editvisi:hover svg, 
+.editmisi:hover svg {
+  color: #DA7629; 
+  transition: color 0.3s ease;
+}
+
+/* Tooltip styling */
+.editvisi::after, .editmisi::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0,0,0,0.75);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 5px;
+  white-space: nowrap;
+  font-size: 9pt;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.editvisi:hover::after, 
+.editmisi:hover::after {
+  opacity: 1;
+}
+
+/* Style placeholder "tambah visi/misi" */
+.add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: fit-content;
+  padding: 10pt;
+  border: 1px dashed #DA7629;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #DA7629;
+  font-size: 10pt;
+  margin-top: 10pt;
+}
+
+.add:hover {
+  background-color: rgba(218, 118, 41, 0.1);
+}
+
+.add p{
+    margin-left: 7pt;
+}
+
+.hapus{
+    margin-right: 0;
+    margin-left: auto;
+}
