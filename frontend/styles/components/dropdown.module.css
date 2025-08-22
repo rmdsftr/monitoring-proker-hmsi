@@ -5,6 +5,8 @@
   border-radius: 6px;
   min-width: 120px;
   transition: all 0.2s ease;
+  font-family: var(--poppins);
+  font-weight: 400;
 }
 
 .select {
@@ -41,18 +43,18 @@
 }
 
 .solid {
-  background-color: #374151;
-  color: white;
+  background-color: rgba(255, 255, 255, 0.3);
+  color: black;
   border: 1.5px solid transparent;
 }
 
 .solid:hover:not(.disabled) {
-  background-color: #4b5563;
+  background-color: #da762988;
 }
 
 .solid:focus-within {
-  background-color: #4b5563;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 0 3px #da76293e;
 }
 
 .solid .select {
@@ -85,12 +87,12 @@
 }
 
 .md {
-  min-height: 40px;
+  min-height: 30px;
 }
 
 .md .select {
-  padding: 13px;
-  font-size: 14px;
+  padding: 8.5px;
+  font-size: 13px;
   line-height: 1.4;
 }
 
@@ -226,8 +228,7 @@
 }
 
 .solid .dropdownMenu {
-  background: #374151;
-  border-color: #4b5563;
+  background: white;
 }
 
 .option {
@@ -244,7 +245,11 @@
 
 .md .option {
   padding: 8px 13px;
-  font-size: 14px;
+  font-size: 12px;
+}
+
+.md .option:hover{
+  background-color: #da762980;
 }
 
 .lg .option {
@@ -253,7 +258,7 @@
 }
 
 .option:hover {
-  background-color: #DA7629;
+  background-color: white;
   color: #111827;
 }
 
@@ -263,12 +268,12 @@
 }
 
 .solid .option.selected {
-  background-color: #4b5563;
+  background-color: #da762980;
   color: white;
 }
 
 .solid .option:hover {
-  background-color: #DA7629;
+  background-color: #da762980;
   color: #111827;
 }
 

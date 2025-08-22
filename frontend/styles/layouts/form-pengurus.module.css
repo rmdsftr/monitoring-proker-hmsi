@@ -1,0 +1,29 @@
+.rata{
+    display: flex;
+    flex: 1;
+    gap: 5pt;
+    width: 100%;
+}
+
+.full{
+    width: 100%;
+}
+
+.note{
+    font-family: var(--poppins);
+    font-size: 7pt;
+    text-align: start;
+}
+
+.drop{
+    margin-top: 10pt;
+    margin-bottom: 10pt;
+}
+
+.btn{
+    margin-top: 10pt;
+}
+
+.container{
+    min-width: 300pt;
+}

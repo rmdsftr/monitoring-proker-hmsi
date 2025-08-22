@@ -79,6 +79,7 @@ export default function FormLogin() {
             value={noHima}
             onChange={(e) => setNoHima(e.target.value)}
             error={errors.no_hima} // kirim error ke input
+            className={styles.input}
           />
         </div>
         <br />
@@ -97,6 +98,7 @@ export default function FormLogin() {
         <div className={styles.full}>
           <PasswordInput
             variant="outline"
+            className={styles.input}
             iconLeft={<FaLock size={15} color="black" />}
             placeholder="Password"
             value={password}

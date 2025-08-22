@@ -6,6 +6,7 @@ import styling from "@/styles/layouts/token.module.css";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { verifyToken } from "@/services/tokenService";
+import { FaKey } from "react-icons/fa";
 
 export default function TokenForm() {
   const [token, setToken] = useState("");
@@ -40,12 +41,14 @@ export default function TokenForm() {
         disabled={loading}
         error={error}
         required
+        iconLeft={<FaKey size={13} color="black"/>}
       />
       <br />
       <Button
         className={styling.btn}
         disabled={loading || !token.trim()}
         type="submit"
+        color="secondary"
       >
         {loading ? "Memverifikasi token..." : "Aktivasi"}
       </Button>

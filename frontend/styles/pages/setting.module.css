@@ -1,0 +1,22 @@
+.container{
+    display: flex;
+    padding: 25pt;
+    font-family: var(--poppins);
+}
+
+.title{
+    margin-left: 50pt;
+    margin-top: 25pt;
+    font-family: var(--poppins);
+    color: #DA7629;
+}
+
+.content{
+    display: flex;
+    flex-direction: column;
+}
+
+.end{
+    width: fit-content;
+    margin: auto;
+}

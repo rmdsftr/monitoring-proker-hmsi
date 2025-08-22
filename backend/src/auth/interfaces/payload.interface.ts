@@ -1,10 +1,15 @@
 export interface jwtPayload{
     id_anggota:string;
-    no_hima:string;
-    nim:string;
-    role:string | null;
-    panggilan: string | null;
-    id_periode:string | null;
-    id_divisi:string | null;
-    id_jabatan:string | null;
+    id_pengurus: string;
+    role:string;
+    panggilan: string;
+    id_periode:string;
+    periode:string;
+    id_fungsional:string;
+    id_jabatan:string;
+    exp?: number; 
+    iat?: number; 
+    iss?: string; 
+    sub?: string; 
+    aud?: string;
 }

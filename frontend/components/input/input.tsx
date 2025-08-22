@@ -3,13 +3,14 @@ import clsx from "clsx";
 import styles from "@/styles/components/input.module.css";
 import { poppins } from "../fonts/fontname";
 
-interface Props extends InputHTMLAttributes<HTMLInputElement> {
+interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, "size"> {
   label?: string;
   iconLeft?: ReactNode;
   iconRight?: ReactNode;
   error?: string;
   variant?: "outline" | "solid" | "ghost";
   color?: "primary" | "danger" | "gray";
+  size?: "large" | "medium" | "small";
   className?: string;
 }
 
@@ -20,6 +21,7 @@ export function Input({
   error,
   variant = "outline",
   color = "primary",
+  size= "medium",
   className,
   ...props
 }: Props) {
@@ -32,6 +34,7 @@ export function Input({
           styles.inputContainer,
           styles[variant],
           styles[color],
+          styles[size],
           error && styles.error
         )}
       >

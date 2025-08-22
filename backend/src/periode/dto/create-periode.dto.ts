@@ -1,11 +1,11 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class CreatePeriodeDto{
     @IsNotEmpty()
-    @IsString()
-    start_year:string;
+    @IsNumber()
+    start_year:number;
 
     @IsNotEmpty()
-    @IsString()
-    end_year:string;
+    @IsNumber()
+    end_year:number;
 }

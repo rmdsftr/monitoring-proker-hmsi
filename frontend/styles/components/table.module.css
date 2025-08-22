@@ -1,0 +1,228 @@
+/* Container */
+.container {
+  overflow-x: auto;
+  border-radius: 8px;
+  transition: all 0.2s ease-in-out;
+  background-color: transparent;
+  font-family: var(--poppins);
+}
+
+.container.light {
+  background-color: transparent;
+}
+
+.container.dark {
+  background-color: transparent;
+}
+
+/* Table */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* Header */
+.thead {
+  border-bottom: 1px solid white;
+  background-color: transparent;
+}
+
+.light .thead {
+  background-color: transparent;
+  border-bottom-color: white;
+}
+
+.dark .thead {
+  background-color: transparent;
+  border-bottom-color: white;
+}
+
+.th {
+  padding: 15px 25px;
+  font-weight: 600;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: white;
+}
+
+.light .th {
+  color: white;
+}
+
+.dark .th {
+  color: white;
+}
+
+/* Body */
+.tbody {
+  transition: all 0.2s ease-in-out;
+  background-color: transparent;
+}
+
+.light .tbody {
+  background-color: transparent;
+}
+
+.dark .tbody {
+  background-color: transparent;
+}
+
+/* Rows */
+.tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.2s ease-in-out;
+}
+
+.light .tr {
+  border-bottom-color: rgba(255, 255, 255, 0.2);
+}
+
+.dark .tr {
+  border-bottom-color: rgba(255, 255, 255, 0.2);
+}
+
+.tr.hoverable {
+  cursor: pointer;
+}
+
+/* .evenRow {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.oddRow {
+  background-color: transparent;
+}
+
+.light .evenRow {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.light .oddRow {
+  background-color: transparent;
+}
+
+.dark .evenRow {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.dark .oddRow {
+  background-color: transparent;
+} */
+
+/* Cells */
+.td {
+  padding: 15px 25px;
+  vertical-align: middle;
+  transition: all 0.2s ease-in-out;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.light .td {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.dark .td {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Last column - remove right border */
+.lastColumn {
+  border-right: none !important;
+}
+
+/* Empty state */
+.emptyState {
+  padding: 48px 24px;
+  text-align: center;
+  font-size: 13px;
+}
+
+.light .emptyState {
+  color: #6b7280;
+}
+
+.dark .emptyState {
+  color: #9ca3af;
+}
+
+.emptyIcon {
+  margin: 0 auto 16px;
+  opacity: 0.5;
+}
+
+.td .gap{
+    display: flex;
+    gap: 5pt;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .table {
+    font-size: 12px;
+  }
+  
+  .th,
+  .td {
+    padding: 8px 12px;
+  }
+  
+  .th {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .table {
+    font-size: 11px;
+  }
+  
+  .th,
+  .td {
+    padding: 6px 8px;
+  }
+  
+  .th {
+    font-size: 11px;
+  }
+  
+  .emptyState {
+    padding: 32px 16px;
+    font-size: 14px;
+  }
+}
+
+/* Focus states for accessibility */
+.tr.hoverable:focus-within {
+  outline: 2px solid #3b82f6;
+  outline-offset: -2px;
+}
+
+.dark .tr.hoverable:focus-within {
+  outline-color: #60a5fa;
+}
+
+/* Print styles */
+@media print {
+  .container {
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+  
+  .light .container {
+    background-color: #fff;
+  }
+  
+  .light .thead {
+    background-color: transparent;
+  }
+  
+  .light .tr:hover {
+    background-color: transparent !important;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+}

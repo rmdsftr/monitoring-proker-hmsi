@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, InternalServerErrorException, UnauthorizedException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import { AddVisiDto } from "./dto/addvisi.dto";
+import { EditVisiDto } from "./dto/editvisi.dto";
 
 @Injectable()
 export class VisiService{
@@ -23,7 +24,7 @@ export class VisiService{
                 }
             })
 
-            if(periode!.status_periode !== "on going"){
+            if(periode!.status_periode !== "on_going"){
                 throw new UnauthorizedException("Periode saat ini sedang tidak aktif");    
             }
 
@@ -84,6 +85,61 @@ export class VisiService{
             }));
 
             return visiFormatted;
+        } catch (error) {
+            console.error("error nya di sini : ", error);
+            throw error instanceof Error
+                ? error
+                : new InternalServerErrorException("Terjadi kesalahan pada server");
+        }
+    }
+
+    async editVisi(id_visi:number, dto:EditVisiDto, id_periode:string){
+        try {
+            const cek = await this.prisma.visi.findFirst({
+                where: { 
+                    AND: {
+                        id_visi: id_visi,
+                        id_periode: id_periode
+                    }
+                }
+            });
+
+            if(!cek){
+                throw new BadRequestException("ID visi tidak valid")
+            }
+
+            await this.prisma.visi.update({
+                where: {id_visi: id_visi},
+                data: {
+                    visi: dto.visi
+                }
+            })
+        } catch (error) {
+            console.error("error nya di sini : ", error);
+            throw error instanceof Error
+                ? error
+                : new InternalServerErrorException("Terjadi kesalahan pada server");
+        }
+    }
+
+    async deleteVisi(id_visi:number, id_periode:string){
+        try {
+            const cek = await this.prisma.visi.findFirst({
+                where: { 
+                    AND: {
+                        id_visi: id_visi,
+                        id_periode: id_periode
+                    }
+                }
+            });
+
+            if(!cek){
+                throw new BadRequestException("ID visi tidak valid")
+            }
+
+            await this.prisma.visi.delete({
+                where: {id_visi: id_visi}
+            })
         } catch (error) {
             console.error("error nya di sini : ", error);
             throw error instanceof Error

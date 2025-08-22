@@ -51,7 +51,7 @@ export function Welcome({periode, visi, misi}: props){
                     <br />
 
                     {user ? (
-                        <Link href="/master" className={styles.kelola}>
+                        <Link href="/m/pengurus" className={styles.kelola}>
                             <Button variant="outline" color="primary" size="md">Kelola Data Master</Button>
                         </Link>
                     ) : (null)}

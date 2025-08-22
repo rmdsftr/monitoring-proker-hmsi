@@ -1,11 +1,12 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { tipe_fungsional_enum } from "@prisma/client";
+import { IsEnum, IsNotEmpty, IsString } from "class-validator";
 
 export class CreateDivisiDto{
     @IsNotEmpty()
     @IsString()
-    id_divisi:string;
+    id_fungsional:string;
 
     @IsNotEmpty()
     @IsString()
-    divisi:string;
+    fungsional:string;
 }

@@ -11,4 +11,9 @@ export class TokenController{
     async verify(@Body() dto:VerifyTokenDto){
         return await this.tokenService.verify(dto);
     }
+
+    @Post('kahim/new')
+    async newKahim(){
+        
+    }
 }

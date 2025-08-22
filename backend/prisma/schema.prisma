@@ -8,97 +8,143 @@ datasource db {
 }
 
 model anggota {
-  no_hima    String     @unique(map: "unique_no_hima") @db.VarChar(100)
-  nama       String     @db.VarChar(255)
-  nim        String     @unique @db.VarChar(50)
-  sandi      String     @db.VarChar(255)
-  role       String?    @default("anggota") @db.VarChar(50)
-  foto       String?
+  id_anggota String     @id @db.VarChar(255)
+  nama       String?    @db.VarChar(255)
+  panggilan  String?    @db.VarChar(255)
+  nohima     String?    @db.VarChar(50)
+  nim        String?    @db.VarChar(50)
+  sandi      String?
   birthdate  DateTime?  @db.Date
-  birthplace String?    @db.VarChar(255)
+  birthplace String?    @db.VarChar(100)
   alamat     String?
   nohp       String?    @db.VarChar(50)
   created_at DateTime?  @default(now()) @db.Timestamptz(6)
   updated_at DateTime?  @default(now()) @db.Timestamptz(6)
-  panggilan  String?    @db.VarChar(100)
-  id_anggota String     @id @db.VarChar(255)
   pengurus   pengurus[]
-}
-
-model detail_divisi {
-  id_divisi  String   @db.VarChar(100)
-  id_periode String   @db.VarChar(100)
-  foto       String?
-  deskripsi  String?
-  visi       String?
-  misi       String[]
-  divisi     divisi   @relation(fields: [id_divisi], references: [id_divisi], onDelete: Cascade, onUpdate: NoAction)
-  periode    periode  @relation(fields: [id_periode], references: [id_periode], onDelete: Cascade, onUpdate: NoAction)
-
-  @@id([id_divisi, id_periode])
-}
-
-model divisi {
-  id_divisi     String          @id @db.VarChar(100)
-  divisi        String          @db.VarChar(255)
-  created_at    DateTime?       @default(now()) @db.Timestamptz(6)
-  updated_at    DateTime?       @default(now()) @db.Timestamptz(6)
-  is_inti       Boolean?
-  detail_divisi detail_divisi[]
-  pengurus      pengurus[]
 }
 
 model jabatan {
-  id_jabatan String     @id @db.VarChar(100)
-  jabatan    String     @db.VarChar(255)
-  created_at DateTime?  @default(now()) @db.Timestamptz(6)
-  updated_at DateTime?  @default(now()) @db.Timestamptz(6)
-  pengurus   pengurus[]
+  id_jabatan      String            @id @db.VarChar(255)
+  jabatan         String?           @db.VarChar(255)
+  created_at      DateTime?         @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime?         @default(now()) @db.Timestamptz(6)
+  periode_jabatan periode_jabatan[]
 }
 
 model pengurus {
-  id_periode String   @db.VarChar(100)
-  id_jabatan String?  @db.VarChar(100)
-  id_divisi  String?  @db.VarChar(100)
-  id_anggota String   @db.VarChar(255)
-  anggota    anggota  @relation(fields: [id_anggota], references: [id_anggota], onDelete: NoAction, onUpdate: NoAction)
-  divisi     divisi?  @relation(fields: [id_divisi], references: [id_divisi], onDelete: NoAction, onUpdate: NoAction)
-  jabatan    jabatan? @relation(fields: [id_jabatan], references: [id_jabatan], onDelete: NoAction, onUpdate: NoAction)
-  periode    periode  @relation(fields: [id_periode], references: [id_periode], onDelete: Cascade, onUpdate: NoAction)
-
-  @@id([id_anggota, id_periode])
+  id_pengurus       String                @id @db.VarChar(255)
+  id_periode        String?               @db.VarChar(255)
+  id_anggota        String?               @db.VarChar(255)
+  role              role_enum?
+  status_pengurus   status_pengurus_enum?
+  foto              String?
+  member_fungsional member_fungsional[]
+  anggota           anggota?              @relation(fields: [id_anggota], references: [id_anggota], onDelete: NoAction, onUpdate: NoAction)
+  periode           periode?              @relation(fields: [id_periode], references: [id_periode], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model periode {
-  id_periode     String          @id @db.VarChar(100)
-  start_year     String?         @db.VarChar(10)
-  end_year       String?         @db.VarChar(10)
-  status_periode String?         @db.VarChar(100)
-  created_at     DateTime?       @default(now()) @db.Timestamptz(6)
-  updated_at     DateTime?       @default(now()) @db.Timestamptz(6)
-  background     String?
-  token_transisi String?         @unique(map: "unique_token_transisi") @db.VarChar(255)
-  foto_inti      String?
-  detail_divisi  detail_divisi[]
-  misi           misi[]
-  pengurus       pengurus[]
-  visi           visi[]
+  id_periode         String               @id @db.VarChar(255)
+  start_year         Int?
+  end_year           Int?
+  periode            String?              @db.VarChar(50)
+  token_transisi     String?
+  wallpaper          String?
+  inti_photo         String?
+  status_periode     status_periode_enum?
+  created_at         DateTime?            @default(now()) @db.Timestamptz(6)
+  updated_at         DateTime?            @default(now()) @db.Timestamptz(6)
+  sequence           Int?
+  misi               misi[]
+  pengurus           pengurus[]
+  periode_fungsional periode_fungsional[]
+  periode_jabatan    periode_jabatan[]
+  visi               visi[]
+}
+
+model fungsional {
+  id_fungsional      String               @id @db.VarChar(255)
+  fungsional         String?              @db.VarChar(255)
+  created_at         DateTime?            @default(now()) @db.Timestamptz(6)
+  updated_at         DateTime?            @default(now()) @db.Timestamptz(6)
+  periode_fungsional periode_fungsional[]
+}
+
+model member_fungsional {
+  id_periode_fungsional String             @db.VarChar(255)
+  id_pengurus           String             @db.VarChar(255)
+  id_periode_jabatan    String             @db.VarChar(255)
+  is_leader             Boolean?
+  pengurus              pengurus           @relation(fields: [id_pengurus], references: [id_pengurus], onDelete: NoAction, onUpdate: NoAction)
+  periode_fungsional    periode_fungsional @relation(fields: [id_periode_fungsional], references: [id_periode_fungsional], onDelete: NoAction, onUpdate: NoAction)
+  periode_jabatan       periode_jabatan    @relation(fields: [id_periode_jabatan], references: [id_periode_jabatan], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([id_periode_fungsional, id_pengurus, id_periode_jabatan])
+}
+
+model periode_fungsional {
+  id_periode_fungsional String                @id @db.VarChar(255)
+  id_fungsional         String?               @db.VarChar(255)
+  id_periode            String?               @db.VarChar(255)
+  deskripsi             String?
+  visi                  String?
+  misi                  String?
+  foto                  String?
+  tipe                  tipe_fungsional_enum?
+  member_fungsional     member_fungsional[]
+  fungsional            fungsional?           @relation(fields: [id_fungsional], references: [id_fungsional], onDelete: NoAction, onUpdate: NoAction)
+  periode               periode?              @relation(fields: [id_periode], references: [id_periode], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model periode_jabatan {
+  id_periode_jabatan String              @id @db.VarChar(255)
+  id_jabatan         String?             @db.VarChar(255)
+  id_periode         String?             @db.VarChar(255)
+  is_presidium       Boolean?
+  is_inti            Boolean?
+  member_fungsional  member_fungsional[]
+  jabatan            jabatan?            @relation(fields: [id_jabatan], references: [id_jabatan], onDelete: NoAction, onUpdate: NoAction)
+  periode            periode?            @relation(fields: [id_periode], references: [id_periode], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model misi {
-  id_misi    BigInt    @id @default(autoincrement())
+  id_misi    Int       @id @default(autoincrement())
   misi       String?
-  id_periode String?   @db.VarChar(100)
+  id_periode String?   @db.VarChar(255)
   created_at DateTime? @default(now()) @db.Timestamptz(6)
   updated_at DateTime? @default(now()) @db.Timestamptz(6)
   periode    periode?  @relation(fields: [id_periode], references: [id_periode], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model visi {
-  id_visi    BigInt    @id @default(autoincrement())
+  id_visi    Int       @id @default(autoincrement())
   visi       String?
-  id_periode String?   @db.VarChar(100)
+  id_periode String?   @db.VarChar(255)
   created_at DateTime? @default(now()) @db.Timestamptz(6)
   updated_at DateTime? @default(now()) @db.Timestamptz(6)
   periode    periode?  @relation(fields: [id_periode], references: [id_periode], onDelete: NoAction, onUpdate: NoAction)
+}
+
+enum role_enum {
+  superadmin
+  admin
+  user
+}
+
+enum status_pengurus_enum {
+  aktif
+  cuti
+  nonaktif
+}
+
+enum status_periode_enum {
+  upcoming
+  on_going  @map("on going")
+  done
+  disbanded
+}
+
+enum tipe_fungsional_enum {
+  divisi
+  inti
 }

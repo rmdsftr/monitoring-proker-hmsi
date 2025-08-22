@@ -6,18 +6,31 @@ import { TopRight } from "@/layouts/navbar";
 import Link from "next/link";
 import { Welcome } from "@/layouts/landing";
 import { poppins } from "@/components/fonts/fontname";
+import { useEffect, useState } from "react";
+import { LandingService } from "@/services/landing";
 
 export default function Home() {
 
-  const misiData = [
-    "Meningkatkan kualitas dan profesionalitas anggota HMSI melalui pengembangan kompetensi dasar dan soft skills.",
-    "Membangun budaya organisasi yang berintegritas, inovatif, dan berorientasi pada hasil untuk menciptakan periode kepengurusan yang berkualitas.",
-    "Memperkuat jejaring dan kerjasama dengan berbagai pihak, baik internal maupun eksternal kampus, untuk meningkatkan peluang pengembangan diri anggota HMSI.",
-    "Mengoptimalkan fungsi HMSI sebagai wadah aspirasi, kreativitas, dan pengembangan potensi mahasiswa Sistem Informasi.",
-    "Menyelenggarakan program kerja yang berfokus pada peningkatan kualitas akademik, non akademik, dan pengabdian.",
-    "Meningkatkan peran HMSI dalam pengembangan kompetensi teknologi informasi dan kewirausahaan.",
-    "Memfasilitasi dan mendorong anggota HMSI untuk aktif dalam kegiatan akademik, non-akademik, dan pengabdian masyarakat yang relevan dengan bidang Sistem Informasi."
-  ];
+  const [visi, setVisi] = useState<string>("");
+  const [misi, setMisi] = useState<string[]>([]);
+  const [periode, setPeriode] = useState<string>("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await LandingService();
+        if(data){
+          setVisi(data.visi?.visi || "");
+          setMisi(Array.isArray(data.misi) ? data.misi.map((item:any) => item.misi) : [data.misi?.misi].filter(Boolean));
+          setPeriode(data.periode || "")
+        }
+      } catch (error) {
+        console.error("Gagal load landing data : ", error);
+      }
+    }
+
+    fetchData();
+  }, [])
 
   return (
     <div>
@@ -28,19 +41,17 @@ export default function Home() {
           </Link>
 
           <div className={styles.float}>
-              <Link href="/login" style={{ textDecoration: "none" }}>
-                <TopRight />
-              </Link>
+              <TopRight />
           </div>
         </div>
 
         <div className={styles.landing}>
           <Welcome 
-            periode="2024/2025"
-            visi="Mewujudkan HMSI Universitas Andalas sebagai organisasi yang memiliki integritas dan profesionalitas dalam mengoptimalkan potensi mahasiswa Sistem Informasi melalui keunggulan akademik, non akademik, dan ketaqwaan."
+            periode={periode || "???"}
+            visi={visi}
             misi={
             <ul className={`${poppins.variable} ${styles.two}`}>
-              {misiData.map((item, idx) => (
+              {misi.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
             </ul>

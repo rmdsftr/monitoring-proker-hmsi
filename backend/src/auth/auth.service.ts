@@ -1,8 +1,7 @@
 import { HttpException, HttpStatus, Injectable, InternalServerErrorException, UnauthorizedException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
-import { StartDto } from "./dto/register.dto";
 import { failed, success } from "../utils/response";
-import { formatPrimaryKey, toTitleCase } from "../utils/titlecase";
+import { formatPrimaryKey, toTitleCase, toUpperCase } from "../utils/titlecase";
 import * as bcrypt from 'bcrypt';
 import { jwtPayload } from "./interfaces/payload.interface";
 import { JwtTokenUtil } from "../utils/jwt-token";
@@ -11,286 +10,288 @@ import { Request, Response } from "express";
 import { NewPeriodLoginDto } from "./dto/new-period.dto";
 import { LoginDto } from "./dto/login.dto";
 import { StandardResponse, TokenResponse } from "src/interfaces/standardResponse.interface";
+import { UserValidator } from "../validators/user-auth.validator";
 
 @Injectable()
 export class AuthService{
     constructor(
         private prisma:PrismaService,
         private jwtTokenUtil: JwtTokenUtil,
-        private cookieService: CookieService
+        private cookieService: CookieService,
+        private userValidator: UserValidator
     ){}
 
     async LoginNewPeriode(dto: NewPeriodLoginDto, res: Response) {
-        const id_anggota = formatPrimaryKey(dto.no_hima);
-
-        const cek = await this.prisma.anggota.findUnique({
-            where: { id_anggota: id_anggota },
-            select: {
-                id_anggota:true,
-                no_hima: true,
-                sandi: true,
-                nim: true,
-                panggilan:true,
-                pengurus: { select: { id_periode: true } }
-            }
-        });
-
-        if (!cek) {
-            throw new UnauthorizedException("Anggota tidak terdaftar");
-        }
-
-        const cek2 = await this.prisma.pengurus.findUnique({
-            where:{
-                id_anggota_id_periode: {
-                    id_anggota: id_anggota,
-                    id_periode: dto.periode_id
-                }
+        const nohima = formatPrimaryKey(dto.no_hima);
+        const nim = await this.prisma.anggota.findFirst({
+            where: {
+                nohima: toUpperCase(dto.no_hima)
+            }, select: {
+                nim: true
             }
         })
 
-        if(cek2){
-            throw new UnauthorizedException("Kepengurusan sudah pernah anda buka")
+        const id_anggota = `${nohima}-${nim?.nim}`;
+
+        const cek = await this.prisma.anggota.findUnique({
+            where: { id_anggota },
+            select: {
+            id_anggota: true,
+            panggilan: true,
+            sandi: true,
+            pengurus: {
+                select: {
+                id_pengurus: true,
+                id_periode: true,
+                role: true,
+                status_pengurus: true,
+                periode: { select: { status_periode: true } },
+                member_fungsional: {
+                    select: {
+                    id_periode_fungsional: true,
+                    id_periode_jabatan: true,
+                    },
+                },
+                },
+            },
+            },
+        });
+
+        if (!cek) throw new UnauthorizedException('User tidak ditemukan');
+
+        const jabatan = cek.pengurus?.find(p =>
+            p.member_fungsional?.some(q => q.id_periode_jabatan === 'kahim')
+        );
+
+        const cek2 = await this.prisma.pengurus.findFirst({
+            where: {
+            id_anggota: id_anggota,
+            id_periode: dto.id_periode,
+            },
+            select: {
+            role: true,
+            status_pengurus: true,
+            },
+        });
+
+        const cek3 = await this.prisma.periode.findUnique({
+            where: { id_periode: dto.id_periode },
+            select: { status_periode: true },
+        });
+
+        if (!jabatan &&
+            cek2?.role !== 'superadmin' &&
+            cek2?.status_pengurus !== 'aktif' &&
+            cek3?.status_periode !== 'on_going') {
+            throw new UnauthorizedException(
+            "Anda tidak memiliki akses untuk membuka periode kepengurusan"
+            );
         }
 
-        if(dto.periode_id === dto.id_periode){
-            const pwMatched = await bcrypt.compare(dto.password, cek.sandi);
-            if (!pwMatched) {
-                throw new UnauthorizedException("Password tidak sesuai");
-            }
+        if (dto.periode_id !== dto.id_periode) {
+            throw new UnauthorizedException(
+            "Periode yang diizinkan dibuka hanya dari token aktivasi"
+            );
+        }
 
-            try {
-                await this.prisma.pengurus.create({
-                    data: {
-                        id_anggota: id_anggota,
-                        id_periode: dto.id_periode,
-                        id_jabatan: 'inti',
-                        id_divisi: 'KAHIM'
-                    }
-                });
+        const pwMatched = await bcrypt.compare(dto.password, cek.sandi!);
+        if (!pwMatched) throw new UnauthorizedException('Password tidak sesuai');
 
-                await this.prisma.anggota.update({
-                    where: { id_anggota: id_anggota },
-                    data: { role: 'superadmin' }
-                });
-            } catch (error) {
-                console.error("Gagal memperbarui periode pengurus atau role baru : ", error);
-                throw new HttpException('Kesalahan saat memperbarui data', HttpStatus.CONFLICT);
-            }
+        const payload: jwtPayload = await this.userValidator.userValidation({
+            id_anggota: cek.id_anggota
+        })
 
-            const payload: jwtPayload = {
-                id_anggota: id_anggota,
-                no_hima: cek.no_hima,
-                nim: cek.nim,
-                panggilan: cek.panggilan,
-                role: 'superadmin',
-                id_divisi: 'KAHIM',
-                id_jabatan: 'inti',
-                id_periode: dto.id_periode 
-            };
+        const token = await this.jwtTokenUtil.generateTokens(payload);
+        this.cookieService.setAccessToken(
+            res,
+            token.access_token,
+            token.refresh_token
+        );
 
-            const token = await this.jwtTokenUtil.generateTokens(payload);
-            this.cookieService.setAccessToken(res, token.access_token, token.refresh_token);
+        return { message: 'Login periode baru berhasil' };
+        }
 
-            return { message: 'Login periode baru berhasil' };
-        } else {
-            throw new UnauthorizedException("Periode yang diizinkan dibuka hanya dari token aktivasi")
-        }        
-    }
 
-    async LoginUser(dto:LoginDto, res: Response) {
+    async LoginUser(dto: LoginDto, res: Response) {
         try {
-            const id_anggota = formatPrimaryKey(dto.no_hima);
+            console.log('🚀 === LOGIN PROCESS DEBUG ===');
+            console.log('📋 Request URL:', res.req.url);
+            console.log('📋 Request Origin:', res.req.headers.origin);
+            console.log('📋 Request Headers:', {
+                'content-type': res.req.headers['content-type'],
+                'user-agent': res.req.headers['user-agent']?.substring(0, 50) + '...',
+                'origin': res.req.headers.origin,
+                'referer': res.req.headers.referer
+            });
+
+            const nohima = formatPrimaryKey(dto.no_hima);
+            console.log('🔍 Formatted no_hima:', nohima);
+            
+            const nim = await this.prisma.anggota.findFirst({
+                where: { nohima: toUpperCase(dto.no_hima) },
+                select: { nim: true }
+            });
+
+            if (!nim) {
+                console.log('❌ NIM not found for no_hima:', dto.no_hima);
+                throw new UnauthorizedException('User tidak ditemukan');
+            }
+
+            const id_anggota = `${nohima}-${nim?.nim}`;
+            console.log('🔍 Generated id_anggota:', id_anggota);
 
             const cek = await this.prisma.anggota.findUnique({
-                where: { id_anggota: id_anggota },
+                where: { id_anggota },
                 select: {
-                    id_anggota:true,
-                    no_hima: true,
-                    role:true,
+                    id_anggota: true,
+                    panggilan: true,
                     sandi: true,
-                    nim: true,
-                    panggilan:true,
                     pengurus: {
                         select: {
-                            id_divisi:true,
-                            id_jabatan:true,
-                            id_periode:true
-                        }
-                    }
-                }
+                            id_pengurus: true,
+                            id_periode: true,
+                            role: true,
+                            status_pengurus: true,
+                            periode: { select: { status_periode: true } },
+                            member_fungsional: {
+                                select: {
+                                    id_periode_fungsional: true,
+                                    id_periode_jabatan: true,
+                                },
+                            },
+                        },
+                    },
+                },
             });
 
             if (!cek) {
-                throw new UnauthorizedException("Anggota tidak terdaftar");
+                console.log('❌ User not found in database:', id_anggota);
+                throw new UnauthorizedException('User tidak ditemukan');
             }
 
-            const cek2 = await this.prisma.pengurus.findUnique({
-                where:{
-                    id_anggota_id_periode: {
-                        id_anggota: id_anggota,
-                        id_periode: dto.periode_id
-                    }
-                }
-            })
-
-            if(!cek2){
-                throw new UnauthorizedException("Kepengurusan tidak sesuai dengan yang terdaftar")
-            }
-
-            const pwMatched = await bcrypt.compare(dto.password, cek.sandi);
-            
-            if (!pwMatched) {
-                throw new UnauthorizedException("Password tidak sesuai");
-            }
-
-            const detailUser = cek.pengurus[0];
-
-            const payload: jwtPayload = {
+            console.log('✅ User found:', {
                 id_anggota: cek.id_anggota,
-                no_hima: cek.no_hima,
-                nim: cek.nim,
-                role: cek.role,
                 panggilan: cek.panggilan,
-                id_divisi: detailUser.id_divisi,
-                id_jabatan: detailUser.id_jabatan,
-                id_periode: detailUser.id_periode
-            };
+                pengurus_count: cek.pengurus?.length || 0
+            });
+
+            const activePengurus = cek.pengurus?.find(
+                p => p.status_pengurus === 'aktif' && p.periode?.status_periode === 'on_going'
+            );
+
+            if (!activePengurus) {
+                console.log('❌ No active pengurus found for user:', id_anggota);
+                console.log('📋 Available pengurus:', cek.pengurus?.map(p => ({
+                    id_pengurus: p.id_pengurus,
+                    status_pengurus: p.status_pengurus,
+                    status_periode: p.periode?.status_periode
+                })));
+                throw new UnauthorizedException('Anda tidak memiliki akses ke sistem');
+            }
+
+            console.log('✅ Active pengurus found:', {
+                id_pengurus: activePengurus.id_pengurus,
+                role: activePengurus.role,
+                id_periode: activePengurus.id_periode
+            });
+
+            const pwMatched = await bcrypt.compare(dto.password, cek.sandi!);
+            if (!pwMatched) {
+                console.log('❌ Password mismatch for user:', id_anggota);
+                throw new UnauthorizedException('Password tidak sesuai');
+            }
+
+            console.log('✅ Password verified');
+
+            const payload: jwtPayload = await this.userValidator.userValidation({
+                id_anggota: cek.id_anggota
+            });
+
+            console.log('✅ User validation completed:', payload);
 
             const token = await this.jwtTokenUtil.generateTokens(payload);
-            this.cookieService.setAccessToken(res, token.access_token, token.refresh_token);
+            
+            console.log('🔑 Tokens generated:', {
+                access_token_length: token.access_token.length,
+                refresh_token_length: token.refresh_token.length,
+                access_token_preview: token.access_token.substring(0, 30) + '...',
+                refresh_token_preview: token.refresh_token.substring(0, 30) + '...'
+            });
 
-            return { message: 'Login periode baru berhasil' };
+            // Set cookies dengan detailed logging
+            console.log('🍪 Setting cookies...');
+            console.log('🍪 Environment:', process.env.NODE_ENV);
+            console.log('🍪 Is Production:', process.env.NODE_ENV === 'production');
+            
+            this.cookieService.setAccessToken(
+                res,
+                token.access_token,
+                token.refresh_token
+            );
+
+            console.log('🍪 Cookies set successfully');
+            
+            // Log response headers untuk debugging
+            console.log('📤 Response headers will include:', {
+                'Set-Cookie': res.getHeaders()['set-cookie'] || 'Not set yet'
+            });
+
+            const response = { 
+                message: 'Login periode baru berhasil',
+                user: {
+                    id_anggota: cek.id_anggota,
+                    panggilan: cek.panggilan,
+                    role: activePengurus.role
+                },
+                debug_info: {
+                    cookies_set: true,
+                    environment: process.env.NODE_ENV,
+                    timestamp: new Date().toISOString()
+                }
+            };
+
+            console.log('✅ Login successful, sending response:', response);
+            return response;
+
         } catch (error) {
-            if(!(error instanceof Error)){
-                console.error("Kesalahan pada server : ", error);
-                throw new InternalServerErrorException("Terjadi kesalahan pada server")
+            console.error('❌ Login error:', {
+                message: error.message,
+                stack: error.stack,
+                type: error.constructor.name
+            });
+
+            if (!(error instanceof Error)) {
+                console.error('Kesalahan pada server : ', error);
+                throw new InternalServerErrorException('Terjadi kesalahan pada server');
             }
             throw error;
         }
     }
 
-
-    // async register(dto:StartDto, res: Response){
-    //     try {
-    //         const cek_token = await this.prisma.periode.findUnique({
-    //             where: {token_transisi: dto.token_transisi},
-    //             select: {
-    //                 id_periode:true
-    //             }
-    //         })
-
-    //         if(!cek_token){
-    //             return failed("Token tidak valid")
-    //         }
-
-    //         const cek_anggota = await this.prisma.anggota.findUnique({
-    //             where: {no_hima: dto.no_hima}
-    //         })
-
-    //         if(cek_anggota){
-    //             return failed("Akun Anda sudah terdaftar. Silahkan login")
-    //         }
-
-    //         if(dto.sandi !== dto.konfirmasi_sandi){
-    //             return failed("Sandi tidak sesuai")
-    //         }
-
-    //         const hashedpw = await bcrypt.hash(dto.sandi, 12);
-
-    //         const newKahim = await this.prisma.anggota.create({
-    //             data: {
-    //                 no_hima: dto.no_hima,
-    //                 nim: dto.nim,
-    //                 nama: toTitleCase(dto.nama),
-    //                 panggilan: toTitleCase(dto.panggilan),
-    //                 sandi: hashedpw,
-    //                 role: 'superadmin'
-    //             }
-    //         })
-
-    //         const newPengurus = await this.prisma.pengurus.create({
-    //             data: {
-    //                 no_hima: dto.no_hima,
-    //                 id_periode: cek_token.id_periode,
-    //                 id_jabatan: 'inti',
-    //                 id_divisi: 'KAHIM'
-    //             }
-    //         })
-
-    //         const payload: jwtPayload = {
-    //             no_hima: dto.no_hima,
-    //             nim: dto.nim,
-    //             role: 'superadmin',
-    //             id_periode: cek_token.id_periode,
-    //             id_divisi: 'KAHIM',
-    //             id_jabatan: 'inti'
-    //         }
-
-    //         const tokens = await this.jwtTokenUtil.generateTokens(payload);
-    //         this.cookieService.setAccessToken(res, tokens.access_token, tokens.refresh_token)
-
-    //         await this.prisma.periode.update({
-    //             where: {token_transisi: dto.token_transisi},
-    //             data: {token_transisi: 'done'}
-    //         })
-
-    //         return success("Kepengurusan baru HMSI berhasil dibuka", [newKahim, newPengurus])
-    //     } catch (error) {
-    //         return failed("Gagal membuka kepengurusan baru", error)
-    //     }
-    // }
-
-    async refreshToken(request: Request, response:Response):Promise<StandardResponse<TokenResponse>>{
+    async refreshToken(request: Request, response: Response): Promise<StandardResponse<TokenResponse>> {
         try {
             const refresh_token = this.cookieService.getRefreshToken(request);
-            if(!refresh_token){
-                throw new UnauthorizedException("Refresh token tidak ditemukan")
+            if (!refresh_token) {
+                throw new UnauthorizedException("Refresh token tidak ditemukan");
             }
 
-            const payload = this.jwtTokenUtil.verifyToken(refresh_token);
+            const decoded = this.jwtTokenUtil.verifyToken(refresh_token);
 
-            const user = await this.prisma.anggota.findUnique({
-                where: {id_anggota: payload.id_anggota},
-                select: {
-                    id_anggota:true,
-                    no_hima:true,
-                    nim:true,
-                    role:true,
-                    panggilan: true,
-                    pengurus: {
-                        select: {
-                            id_periode:true,
-                            id_divisi:true,
-                            id_jabatan:true
-                        }
-                    }
-                }
-            })
+            const payload: jwtPayload = await this.userValidator.userValidation({
+                id_anggota: decoded.id_anggota,
+            });
 
-            if(!user){
-                throw new UnauthorizedException("Pengguna tidak ditemukan")
-            }
+            const tokens = await this.jwtTokenUtil.generateTokens(payload);
 
-            const pengurus = user.pengurus[0];
-
-            const newPayload: jwtPayload = {
-                id_anggota: user.id_anggota,
-                no_hima: user.no_hima,
-                nim: user.nim,
-                role: user.role,
-                panggilan: user.panggilan,
-                id_periode: pengurus?.id_periode,
-                id_divisi: pengurus?.id_divisi,
-                id_jabatan: pengurus?.id_jabatan
-            }
-
-
-            const tokens = await this.jwtTokenUtil.generateTokens(newPayload);
-            this.cookieService.setAccessToken(response, tokens.access_token, tokens.refresh_token)
+            this.cookieService.setAccessToken(
+                response,
+                tokens.access_token,
+                tokens.refresh_token
+            );
 
             return {
-                status: 'success',
-                message: 'Token refreshed successfully',
+                status: "success",
+                message: "Token refreshed successfully",
                 data: {
                     accessToken: tokens.access_token,
                     refreshToken: tokens.refresh_token,
@@ -298,10 +299,15 @@ export class AuthService{
             };
         } catch (error) {
             this.cookieService.clearTokens(response);
-            if(error instanceof UnauthorizedException){
-                return failed(error.message)
+
+            if (error instanceof UnauthorizedException) {
+                return failed(error.message);
             }
-            return failed("Gagal memperbarui token: ", error)
+
+            console.error("Refresh token error:", error);
+            return failed(`Gagal memperbarui token: ${error}`);
         }
     }
+
+
 }

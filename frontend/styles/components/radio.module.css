@@ -1,0 +1,84 @@
+.radioWrapper {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  gap: 8px;
+  font-size: 14px;
+  user-select: none;
+}
+
+.radioInput {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.customRadio {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #555;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  transition: border-color 0.2s ease;
+}
+
+/* Default indicator */
+.customRadio::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background: transparent;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+/* Variant colors */
+.primary {
+  --radio-color: #0070f3;
+}
+.secondary {
+  --radio-color: #666;
+}
+.success {
+  --radio-color: #28a745;
+}
+.danger {
+  --radio-color: #dc3545;
+}
+
+.radioInput:checked ~ .primary,
+.radioInput:checked ~ .secondary,
+.radioInput:checked ~ .success,
+.radioInput:checked ~ .danger {
+  border-color: var(--radio-color);
+}
+
+.radioInput:checked ~ .primary::after,
+.radioInput:checked ~ .secondary::after,
+.radioInput:checked ~ .success::after,
+.radioInput:checked ~ .danger::after {
+  transform: translate(-50%, -50%) scale(1);
+  background: var(--radio-color);
+}
+
+/* Disabled state */
+.radioInput:disabled ~ .customRadio {
+  border-color: #ccc;
+  background: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.radioInput:disabled ~ .radioLabel {
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+.radioLabel {
+  color: #333;
+}

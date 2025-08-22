@@ -1,10 +1,12 @@
-import { Body, Controller, Get, Post, Req, SetMetadata, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Req, SetMetadata, UseGuards } from "@nestjs/common";
 import { VisiService } from "./visimisi.service";
 import { AddVisiDto } from "./dto/addvisi.dto";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 import { Request } from "express";
 import { MisiService } from "./misi.service";
 import { AddMisiDto } from "./dto/addmisi.dto";
+import { EditVisiDto } from "./dto/editvisi.dto";
+import { EditMisiDto } from "./dto/editmisi.dto";
 
 @Controller('visi')
 @UseGuards(JwtAuthGuard)
@@ -29,6 +31,25 @@ export class VisiController{
         const user = req.user!;
         const id_periode = user.id_periode;
         return await this.visiService.getVisi(id_periode!);
+    }
+
+    @Patch('edit/:id_visi')
+    async editVisi(
+        @Param('id_visi', ParseIntPipe) id_visi:number,
+        @Body() dto:EditVisiDto, 
+        @Req() req: Request){
+        const user = req.user;
+        const id_periode = user?.id_periode;
+        return await this.visiService.editVisi(id_visi, dto, id_periode!);
+    }
+
+    @Delete('delete/:id_visi')
+    async deleteVisi(@Param('id_visi', ParseIntPipe) id_visi:number, @Req() req:Request){
+        const user = req.user;
+        const id_periode = user?.id_periode;
+        console.log("ID VISI ADALAH : ", id_visi);
+        console.log("ID PERIODE ADALAH : ", id_periode);
+        return await this.visiService.deleteVisi(id_visi, id_periode!)
     }
 }
 
@@ -55,5 +76,26 @@ export class MisiController{
         const user = req.user;
         const id_periode = user?.id_periode;
         return await this.misiService.getMisi(id_periode!);
+    }
+
+    @Patch('edit/:id_misi')
+    async editMisi(
+        @Param('id_misi', ParseIntPipe) id_misi:number,
+        @Body() dto:EditMisiDto, 
+        @Req() req: Request){
+        const user = req.user;
+        const id_periode = user?.id_periode;
+        console.log("ID MISI ADALAH : ", id_misi);
+        console.log("ID PERIODE ADALAH : ", id_periode);
+        return await this.misiService.editMisi(id_misi, dto, id_periode!);
+    }
+
+    @Delete('delete/:id_misi')
+    async deleteMisi(@Param('id_misi', ParseIntPipe) id_misi:number, @Req() req:Request){
+        const user = req.user;
+        const id_periode = user?.id_periode;
+        console.log("ID MISI ADALAH : ", id_misi);
+        console.log("ID PERIODE ADALAH : ", id_periode);
+        return await this.misiService.deleteMisi(id_misi, id_periode!)
     }
 }

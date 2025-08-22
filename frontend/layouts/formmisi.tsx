@@ -3,34 +3,43 @@ import TextArea from "@/components/textarea/textarea";
 import { Button } from "@/components/button/button";
 import { useState } from "react";
 import styles from "@/styles/layouts/popup-visi.module.css";
-import { AddMisi, GetMisi } from "@/services/misi";
-import { GetVisi } from "@/services/visi";
+import { AddMisi } from "@/services/misi";
 import { useRouter } from "next/navigation";
+import { EditMisi } from "@/services/misi";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: (message: string, type: "success" | "error") => void;
+  mode: "add" | "edit";
+  initialValue?: string;
+  idMisi?: number;
 }
 
-export default function PopupMisiLayout({ isOpen, onClose, onConfirm }: Props) {
+export default function PopupMisiLayout({ isOpen, onClose, onConfirm, mode, initialValue="", idMisi }: Props) {
   if (!isOpen) return null;
   const router = useRouter();
 
-  const [misi, setMisi] = useState("");
+  const [misi, setMisi] = useState(initialValue);
   const [loading, setLoading] = useState(false);
 
-  const handleAddMisi = async (e: React.FormEvent) => {
+  const handleSubmitMisi = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      await AddMisi(misi);
-      onConfirm("Berhasil menambahkan misi", "success");
+      if(mode === "add"){
+        await AddMisi(misi);
+        onConfirm("Berhasil menambahkan misi", "success");
+      } else {
+        await EditMisi(idMisi!, misi);
+        onConfirm("Berhasil mengubah misi", "success");
+      }
+
       onClose();
-      router.push('/m/visimisi');
+      router.push('/m/visimisi')
     } catch (error) {
-        const message = error instanceof Error ? error.message : "Gagal menambahkan misi";
+        const message = error instanceof Error ? error.message : "Gagal menyimpan misi";
         onConfirm(message, "error"); 
         console.error(error);
     } finally {
@@ -41,7 +50,7 @@ export default function PopupMisiLayout({ isOpen, onClose, onConfirm }: Props) {
   return (
     <PopupFormLayout>
       <div className={styles.content}>
-        <form onSubmit={handleAddMisi}>
+        <form onSubmit={handleSubmitMisi}>
           <TextArea
             placeholder="Masukkan poin misi di sini"
             rows={5}
@@ -68,7 +77,9 @@ export default function PopupMisiLayout({ isOpen, onClose, onConfirm }: Props) {
               disabled={loading}
               className={styles.save}
             >
-              {loading ? "Menyimpan..." : "Simpan"}
+              {loading 
+              ? "Menyimpan..." : mode === "add"
+              ?"Simpan" : "Update"}
             </Button>
           </div>
         </form>

@@ -1,6 +1,7 @@
 import { ButtonHTMLAttributes, ReactNode } from "react";
 import clsx from "clsx";
 import styles from "@/styles/components/button.module.css";
+import { poppins } from "../fonts/fontname";
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   children?: ReactNode;
@@ -8,7 +9,7 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   iconRight?: ReactNode;
   loading?: boolean;
   variant?: "solid" | "outline" | "ghost";
-  color?: "primary" | "secondary" | "danger";
+  color?: "primary" | "secondary" | "danger" | "tersier";
   size?: "sm" | "md" | "lg";
 }
 
@@ -35,6 +36,7 @@ export function Button({
         variantClass,
         colorClass,
         sizeClass,
+        poppins.variable,
         className
       )}
       disabled={disabled || loading}
@@ -43,7 +45,7 @@ export function Button({
       {loading && (
         <span className={styles.spinner} />
       )}
-      {!loading && iconLeft && <span className="mr-2">{iconLeft}</span>}
+      {!loading && iconLeft && <span className={styles.iconLeft}>{iconLeft}</span>}
       {children}
       {!loading && iconRight && <span className="ml-2">{iconRight}</span>}
     </button>

@@ -3,6 +3,7 @@
 import { ReactNode, SelectHTMLAttributes, useState, useRef, useEffect } from "react";
 import clsx from "clsx";
 import styles from "@/styles/components/dropdown.module.css";
+import { poppins } from "../fonts/fontname";
 
 interface Option {
   label: string;
@@ -88,7 +89,8 @@ export function Dropdown({
     <div 
       ref={dropdownRef}
       className={clsx(
-        styles.wrapper, 
+        styles.wrapper,
+        poppins.variable, 
         styles[variant], 
         styles[customSize], 
         className,

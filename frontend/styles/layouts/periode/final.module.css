@@ -1,0 +1,75 @@
+.container{
+    display: flex;
+    max-width: 550px;
+    width: 100%;
+    gap: 30pt;
+    font-family: var(--poppins);
+}
+
+.container i {
+    font-size: 9pt;
+}
+
+.space{
+    margin-top: 10pt;
+    margin-bottom: 10pt;
+}
+
+.kiri, .kanan{
+    width: 50%;
+}
+
+.kiri{
+    display: flex;
+    flex-direction: column;
+}
+
+.qr{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10pt;
+}
+
+.token{
+    display: flex;
+    background-color: transparent;
+    width: 100%;
+    border: 1px solid black;
+    border-radius: 5pt;
+}
+
+.token p {
+    padding: 5pt;
+    font-size: 9pt;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.token button{
+    margin-right: 0;
+    margin-left: auto;
+    border-bottom-right-radius: 5pt;
+    border-top-right-radius: 5pt;
+    border: none;
+    padding-left: 8pt;
+    padding-right: 8pt;
+    font-family: var(--poppins);
+    font-size: 9pt;
+    font-weight: 500;
+    background-color: black;
+    color: white;
+    height: 100%;
+}
+
+.token button:hover{
+    cursor: pointer;
+}
+
+.kanan p{
+    font-size: 9pt;
+}
+
+.kanan h5{
+    font-size: 11pt;
+}

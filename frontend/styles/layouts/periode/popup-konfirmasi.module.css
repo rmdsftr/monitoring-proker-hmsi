@@ -1,0 +1,75 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-family: var(--poppins);
+}
+
+.container i{
+    white-space: normal;
+    line-height: 0.75;
+}
+
+.img{
+    border-radius: 100%;
+}
+
+.teks{
+    margin-top: 15pt;
+    margin-bottom: 15pt;
+    font-family: var(--poppins);
+    font-size: 10pt;
+}
+
+.btn{
+    display: flex;
+    gap: 8pt;
+}
+
+.drop{
+    display: flex;
+    gap: 10pt;
+    margin-top: 10pt;
+    margin-bottom: 10pt;
+    width: 100%;
+}
+
+.button{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 15pt;
+}
+
+.catatan{
+    font-size: 8pt;
+    text-align: start;
+}
+
+.back{
+    margin-top: 7pt;
+    margin-bottom: 5pt;
+}
+
+.lebar{
+    width: 350pt;
+}
+
+.full{
+    width: 100%;
+}
+
+.content{
+    background-color: white;
+    padding: 25pt 30pt;
+    border-radius: 20pt;
+}
+
+.error{
+    color: red;
+    font-size: 8pt;
+    font-weight: 500;
+    margin-top: 10pt;
+}

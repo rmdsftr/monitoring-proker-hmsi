@@ -1,0 +1,64 @@
+.checkboxWrapper {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.input {
+  display: none; /* sembunyikan default checkbox */
+}
+
+.customCheckbox {
+  width: 15px;
+  height: 15px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  display: inline-block;
+  position: relative;
+  transition: all 0.2s ease-in-out;
+}
+
+.input:checked + .customCheckbox::after {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: -4px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.label {
+  font-size: 14px;
+  color: #333;
+}
+
+/* Default orange */
+.orange {
+  background-color: white;
+}
+.input:checked + .orange {
+  background-color: #DA7629;
+  border-color: #DA7629;
+}
+
+/* Blue */
+.blue {
+  background-color: white;
+}
+.input:checked + .blue {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+/* Green */
+.green {
+  background-color: white;
+}
+.input:checked + .green {
+  background-color: #28a745;
+  border-color: #28a745;
+}

@@ -17,9 +17,11 @@ type MisiType = {
 type Props = {
   visi?: VisiType | null;
   misi: MisiType[];
-  onEditVisi?: () => void;
+  onEditVisi?: (id_visi:string, visi:string) => void;
   onAddVisi?: () => void;
-  onEditMisi?: (id_misi: string) => void;
+  onDeleteVisi?: (id_visi:string) => void;
+
+  onEditMisi?: (id_misi: string, misi:string) => void;
   onDeleteMisi?: (id_misi: string) => void;
   onAddMisi?: () => void;
   loading?: boolean;
@@ -31,25 +33,34 @@ export default function VisiMisiLayout({
   misi,
   onEditVisi,
   onAddVisi,
+  onDeleteVisi,
+
   onEditMisi,
   onDeleteMisi,
   onAddMisi
 }: Props) {
   return (
     <div className={styles.container}>
-      {/* VISI */}
+    
       <div className={styles.visi}>
         <h4>VISI</h4>
         {visi ? (
           <div className={styles.vision}>
             <div
               className={`${styles.editvisi} ${styles.tooltip}`}
-              onClick={onEditVisi}
+              onClick={() => onEditVisi?.(visi.id_visi, visi.visi)}
               data-tooltip="Edit visi"
             >
               <FaPen size={14} />
             </div>
-            <p>{visi?.visi}</p> {/* ambil string dari object */}
+            <p>{visi?.visi}</p> 
+            <div
+              className={`${styles.editmisi} ${styles.hapus} ${styles.tooltip}`}
+              onClick={() => visi && onDeleteVisi?.(visi?.id_visi)}
+              data-tooltip="Hapus visi"
+            >
+              <FaTrash size={14} />
+            </div>
           </div>
         ) : (
           <div
@@ -63,22 +74,22 @@ export default function VisiMisiLayout({
         )}
       </div>
 
-      {/* MISI */}
+    
       <div className={styles.misi}>
         <h4>MISI</h4>
         {misi.map((item) => (
           <div className={styles.mision} key={item.id_misi}>
             <div
               className={`${styles.editmisi} ${styles.tooltip}`}
-              onClick={() => onEditMisi?.(item.id_misi)}
+              onClick={() => onEditMisi?.(item.id_misi, item.misi)}
               data-tooltip="Edit misi"
             >
               <FaPen size={14} />
             </div>
-            <p>{item.misi}</p> {/* ambil string dari object */}
+            <p>{item.misi}</p> 
             <div
               className={`${styles.editmisi} ${styles.hapus} ${styles.tooltip}`}
-              onClick={() => onDeleteMisi?.(item.id_misi)}
+              onClick={() => misi && onDeleteMisi?.(item.id_misi)}
               data-tooltip="Hapus misi"
             >
               <FaTrash size={14} />

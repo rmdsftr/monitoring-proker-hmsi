@@ -1,9 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import { VerifyTokenDto } from "./dto/verify.dto";
-import { failed, success } from "src/utils/response";
-import { Response } from "express";
-import { url } from "inspector";
 
 @Injectable()
 export class TokenService{
@@ -11,18 +8,21 @@ export class TokenService{
 
     async verify(dto:VerifyTokenDto){
         const cek = await this.prisma.periode.findFirst({
-            where: {token_transisi: dto.token_transisi}
+            where: {token_transisi: dto.token_transisi},
+            select: {
+                id_periode: true,
+                status_periode: true
+            }
         })
 
-        if(!cek){
-            throw new HttpException("Token tidak valid", HttpStatus.BAD_REQUEST);
+        if(cek?.status_periode !== 'upcoming'){
+            throw new HttpException("Token tidak bisa digunakan untuk membuka periode", HttpStatus.BAD_REQUEST);
         }
 
         await this.prisma.periode.update({
             where: {id_periode: cek.id_periode},
             data: {
-                token_transisi: 'verified',
-                status_periode: 'on going'
+                status_periode: 'on_going'
             }
         })
 

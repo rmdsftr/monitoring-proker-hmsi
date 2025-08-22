@@ -1,0 +1,22 @@
+.konten{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 30pt;
+}
+
+.edit, .hapus{
+    height: 10pt;
+    width: 10pt;
+}
+
+.gap{
+    padding: 5pt;    
+}
+
+.cat {
+  display: flex;
+  margin: auto;
+  justify-content: center;
+  align-items: center;
+}

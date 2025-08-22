@@ -11,11 +11,6 @@ export class AuthController{
         private readonly authService:AuthService
     ){}
 
-    // @Post('register')
-    // async register(@Body() dto:StartDto, @Res({passthrough:true}) res:Response){
-    //     return this.authService.register(dto, res);
-    // }
-
     @Post('new')
     async LoginNewPeriod(@Body() dto:NewPeriodLoginDto, @Res({passthrough:true}) res:Response){
         return await this.authService.LoginNewPeriode(dto, res);
